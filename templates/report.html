@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Microsoft 365 - {{CLIENTE_NOME}}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* HEADER - mantém escuro como elemento de marca */
+        .header {
+            background: linear-gradient(135deg, #0D1230 0%, #1A2350 100%);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 3px solid #00D9FF;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(0, 255, 0, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 60px;
+            height: auto;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #00D9FF;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 300;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .header h1 strong {
+            font-weight: 700;
+            color: #00D9FF;
+        }
+
+        .client-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin: 15px 0;
+        }
+
+        .period-badge {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 30px;
+            background: rgba(0, 217, 255, 0.2);
+            border: 1px solid #00D9FF;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #00D9FF;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* EXECUTIVE SUMMARY */
+        .executive-summary {
+            background: linear-gradient(135deg, #F1F5F9 0%, #E2E8F0 100%);
+            padding: 25px 30px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        .executive-summary h3 {
+            color: #0891B2;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .executive-bullets {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .exec-bullet {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .exec-bullet .icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .exec-bullet .icon.green {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .exec-bullet .icon.cyan {
+            background: #CFFAFE;
+            color: #0891B2;
+        }
+
+        .exec-bullet .icon.yellow {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        /* SUMMARY CARDS */
+        .summary-section {
+            padding: 30px;
+            background: #FFFFFF;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0891B2, #06B6D4);
+        }
+
+        .metric-card.success::before { background: linear-gradient(90deg, #059669, #10B981); }
+        .metric-card.warning::before { background: linear-gradient(90deg, #D97706, #F59E0B); }
+        .metric-card.danger::before { background: linear-gradient(90deg, #DC2626, #EF4444); }
+        .metric-card.info::before { background: linear-gradient(90deg, #0891B2, #06B6D4); }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 900;
+            color: #0891B2;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .metric-card.success .metric-value { color: #059669; }
+        .metric-card.warning .metric-value { color: #D97706; }
+        .metric-card.danger .metric-value { color: #DC2626; }
+
+        .metric-label {
+            font-size: 10px;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* MONITORING STATUS */
+        .monitoring-status {
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            margin: 20px 30px;
+            padding: 20px 25px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .monitoring-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background: #10B981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .monitoring-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .monitoring-text span {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #64748B;
+            margin-top: 2px;
+        }
+
+        .monitoring-right {
+            text-align: right;
+            font-size: 12px;
+            color: #64748B;
+        }
+
+        .monitoring-right strong {
+            color: #0891B2;
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid #E2E8F0;
+            background: #FFFFFF;
+        }
+
+        .section:last-of-type { border-bottom: none; }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0891B2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0891B2;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-description {
+            color: #64748B;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* PROGRESS BAR */
+        .progress-container { margin: 20px 0; }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #E2E8F0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: #FFFFFF;
+            background: linear-gradient(90deg, #10B981, #059669);
+        }
+
+        .progress-fill.medium {
+            background: linear-gradient(90deg, #F59E0B, #D97706);
+        }
+
+        .progress-fill.low {
+            background: linear-gradient(90deg, #EF4444, #DC2626);
+        }
+
+        /* METRIC ROWS */
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .metric-row:last-child { border-bottom: none; }
+
+        .metric-row-label {
+            color: #64748B;
+            font-size: 13px;
+        }
+
+        .metric-row-value {
+            font-weight: 600;
+            color: #1E293B;
+            font-size: 13px;
+        }
+
+        .metric-row-value.good { color: #059669; }
+        .metric-row-value.warning { color: #D97706; }
+        .metric-row-value.bad { color: #DC2626; }
+
+        /* TABLES */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #F1F5F9;
+            color: #0891B2;
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 2px solid #0891B2;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #F1F5F9;
+            color: #1E293B;
+            font-size: 13px;
+        }
+
+        tr:hover { background: #F8FAFC; }
+
+        /* TWO COLUMN LAYOUT */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .column-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .column-box h4 {
+            color: #0891B2;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        /* ALERTS & RECOMMENDATIONS */
+        .alert-box {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-left: 4px solid #DC2626;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .alert-box h4 {
+            color: #DC2626;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .alert-box ul { list-style: none; }
+
+        .alert-box li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #1E293B;
+            font-size: 13px;
+        }
+
+        .alert-box li::before {
+            content: "!";
+            position: absolute;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            background: #DC2626;
+            color: #FFFFFF;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 700;
+            line-height: 14px;
+        }
+
+        .recommendations-box {
+            background: #FFFBEB;
+            border: 1px solid #FDE68A;
+            border-left: 4px solid #D97706;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendations-box h4 {
+            color: #D97706;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .recommendations-box ul { list-style: none; }
+
+        .recommendations-box li {
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #1E293B;
+            font-size: 13px;
+        }
+
+        .recommendations-box li::before {
+            content: ">";
+            position: absolute;
+            left: 0;
+            color: #D97706;
+            font-weight: 700;
+        }
+
+        /* SUMMARY BOX */
+        .summary-box {
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            border-left: 4px solid #059669;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .summary-box h4 {
+            color: #059669;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-box p {
+            color: #1E293B;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* SECURITY STATUS */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .security-item {
+            background: #F8FAFC;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #E2E8F0;
+        }
+
+        .security-item .status {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .security-item .label {
+            font-size: 10px;
+            color: #64748B;
+            text-transform: uppercase;
+        }
+
+        /* FOOTER */
+        .footer {
+            background: linear-gradient(135deg, #0D1230 0%, #1A2350 100%);
+            padding: 40px;
+            text-align: center;
+            border-top: 3px solid #00D9FF;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(0, 217, 255, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .footer-content { position: relative; z-index: 1; }
+
+        .footer-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00D9FF;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .footer-tagline {
+            font-size: 11px;
+            color: #94A3B8;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .footer-contact {
+            font-size: 12px;
+            color: #E2E8F0;
+            margin-bottom: 20px;
+        }
+
+        .footer-generated {
+            font-size: 10px;
+            color: #64748B;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* UTILITIES */
+        .text-cyan { color: #0891B2; }
+        .text-green { color: #059669; }
+        .text-yellow { color: #D97706; }
+        .text-red { color: #DC2626; }
+        .text-muted { color: #64748B; }
+
+        @media print {
+            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <img src="{{LOGO_BASE64}}" alt="Logo" class="header-logo">
+            <div class="header-content">
+                <div class="logo-text">Casco Digital</div>
+                <h1>Relatório de Saúde <strong>Microsoft 365</strong></h1>
+                <div class="client-name">{{CLIENTE_NOME}}</div>
+                <div class="period-badge">{{PERIODO}}</div>
+            </div>
+        </div>
+
+        <!-- EXECUTIVE SUMMARY -->
+        <div class="executive-summary">
+            <h3>Resumo Executivo</h3>
+            <div class="executive-bullets">
+                <div class="exec-bullet">
+                    <div class="icon green">✓</div>
+                    <span>Ambiente monitorado continuamente</span>
+                </div>
+                <div class="exec-bullet">
+                    <div class="icon cyan">◉</div>
+                    <span>{{TOTAL_USUARIOS}} usuários sob gestão</span>
+                </div>
+                <div class="exec-bullet">
+                    <div class="icon {{EXEC_SECURITY_CLASS}}">{{EXEC_SECURITY_ICON}}</div>
+                    <span>{{EXEC_SECURITY_TEXT}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MONITORING STATUS -->
+        <div class="monitoring-status">
+            <div class="monitoring-left">
+                <div class="pulse-dot"></div>
+                <div class="monitoring-text">
+                    Monitoramento Ativo
+                    <span>Serviços Microsoft 365 operacionais</span>
+                </div>
+            </div>
+            <div class="monitoring-right">
+                Uptime Microsoft: <strong>99.97%</strong><br>
+                <span style="font-size: 10px;">Fonte: status.microsoft.com</span>
+            </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="summary-section">
+            <div class="summary-grid">
+                <div class="metric-card {{SECURE_SCORE_CLASS}}">
+                    <div class="metric-value">{{SECURE_SCORE}}%</div>
+                    <div class="metric-label">Secure Score</div>
+                </div>
+                <div class="metric-card info">
+                    <div class="metric-value">{{TOTAL_USUARIOS}}</div>
+                    <div class="metric-label">Usuários</div>
+                </div>
+                <div class="metric-card {{MFA_CLASS}}">
+                    <div class="metric-value">{{MFA_PERCENT}}%</div>
+                    <div class="metric-label">MFA Ativo</div>
+                </div>
+                <div class="metric-card {{LOGINS_FALHOS_CLASS}}">
+                    <div class="metric-value">{{LOGINS_FALHOS}}</div>
+                    <div class="metric-label">Bloqueados</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECURITY ANALYSIS -->
+        <div class="section">
+            <h2 class="section-title">Análise de Segurança</h2>
+            <p class="section-description">Verificação contínua de ameaças e vulnerabilidades no ambiente.</p>
+
+            <div class="security-grid">
+                <div class="security-item">
+                    <div class="status">{{THREAT_ICON}}</div>
+                    <div class="label">Ameaças Detectadas</div>
+                </div>
+                <div class="security-item">
+                    <div class="status">{{MALWARE_ICON}}</div>
+                    <div class="label">Malware Bloqueado</div>
+                </div>
+                <div class="security-item">
+                    <div class="status">{{PHISHING_ICON}}</div>
+                    <div class="label">Phishing Prevenido</div>
+                </div>
+            </div>
+
+            <div class="metric-row" style="margin-top: 20px;">
+                <span class="metric-row-label">Status Geral de Segurança</span>
+                <span class="metric-row-value good">{{SECURITY_STATUS}}</span>
+            </div>
+        </div>
+
+        <!-- SECURE SCORE -->
+        <div class="section">
+            <h2 class="section-title">Secure Score Microsoft</h2>
+            <p class="section-description">
+                Métrica oficial da Microsoft que avalia a postura de segurança do ambiente.
+            </p>
+
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill {{SECURE_SCORE_BAR_CLASS}}" style="width: {{SECURE_SCORE}}%">
+                        {{SECURE_SCORE}}%
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-row">
+                <span class="metric-row-label">Pontuação Atual</span>
+                <span class="metric-row-value text-cyan">{{SECURE_SCORE_ATUAL}} pontos</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Pontuação Máxima Possível</span>
+                <span class="metric-row-value">{{SECURE_SCORE_MAX}} pontos</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Variação vs. Mês Anterior</span>
+                <span class="metric-row-value {{SECURE_SCORE_VARIACAO_CLASS}}">{{SECURE_SCORE_VARIACAO}}</span>
+            </div>
+        </div>
+
+        <!-- AUTHENTICATION -->
+        <div class="section">
+            <h2 class="section-title">Autenticação e Identidade</h2>
+
+            <div class="two-columns">
+                <div class="column-box">
+                    <h4>Acessos no Período</h4>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Total de Logins</span>
+                        <span class="metric-row-value">{{TOTAL_LOGINS}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Bem-Sucedidos</span>
+                        <span class="metric-row-value good">{{LOGINS_SUCESSO}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Bloqueados</span>
+                        <span class="metric-row-value {{LOGINS_FALHOS_VALUE_CLASS}}">{{LOGINS_FALHOS}}</span>
+                    </div>
+                </div>
+                <div class="column-box">
+                    <h4>Proteção de Conta</h4>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Usuários com MFA</span>
+                        <span class="metric-row-value">{{USUARIOS_MFA}} de {{TOTAL_USUARIOS}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Cobertura MFA</span>
+                        <span class="metric-row-value {{MFA_VALUE_CLASS}}">{{MFA_PERCENT}}%</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Admins Protegidos</span>
+                        <span class="metric-row-value">{{ADMINS_MFA}}</span>
+                    </div>
+                </div>
+            </div>
+
+            {{USUARIOS_SEM_MFA_SECTION}}
+        </div>
+
+        <!-- COLLABORATION -->
+        <div class="section">
+            <h2 class="section-title">Colaboração e Produtividade</h2>
+
+            <div class="two-columns">
+                <div class="column-box">
+                    <h4>Microsoft Teams</h4>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Total de Teams</span>
+                        <span class="metric-row-value">{{TOTAL_TEAMS}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Grupos Microsoft 365</span>
+                        <span class="metric-row-value">{{TOTAL_GROUPS}}</span>
+                    </div>
+                </div>
+                <div class="column-box">
+                    <h4>Comunicação</h4>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Caixas de Correio</span>
+                        <span class="metric-row-value">{{TOTAL_MAILBOXES}}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-row-label">Shared Mailboxes</span>
+                        <span class="metric-row-value">{{SHARED_MAILBOXES}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LICENSING -->
+        <div class="section">
+            <h2 class="section-title">Licenciamento</h2>
+
+            <div class="metric-row">
+                <span class="metric-row-label">Licenças Contratadas</span>
+                <span class="metric-row-value">{{LICENCAS_TOTAL}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Licenças em Uso</span>
+                <span class="metric-row-value">{{LICENCAS_USADAS}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Licenças Disponíveis</span>
+                <span class="metric-row-value good">{{LICENCAS_DISPONIVEIS}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Taxa de Utilização</span>
+                <span class="metric-row-value">{{LICENCAS_UTILIZACAO}}%</span>
+            </div>
+
+            {{LICENCAS_DETALHES}}
+        </div>
+
+        <!-- STORAGE -->
+        <div class="section">
+            <h2 class="section-title">Armazenamento Cloud</h2>
+
+            <div class="metric-row">
+                <span class="metric-row-label">OneDrive for Business</span>
+                <span class="metric-row-value">{{ONEDRIVE_USADO}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">SharePoint Online</span>
+                <span class="metric-row-value">{{SHAREPOINT_USADO}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Exchange Online</span>
+                <span class="metric-row-value">{{EXCHANGE_USADO}}</span>
+            </div>
+            <div class="metric-row">
+                <span class="metric-row-label">Total Armazenado</span>
+                <span class="metric-row-value text-cyan">{{STORAGE_TOTAL}}</span>
+            </div>
+        </div>
+
+        <!-- SERVICE USAGE -->
+        <div class="section">
+            <h2 class="section-title">Adoção de Serviços</h2>
+            <p class="section-description">Usuários ativos nos últimos 30 dias por serviço Microsoft 365.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Usuários Ativos</th>
+                        <th>Adoção</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{TABELA_USO_SERVICOS}}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- RECOMMENDATIONS -->
+        {{RECOMENDACOES_SECTION}}
+
+        <!-- SUMMARY -->
+        <div class="section">
+            <div class="summary-box">
+                <h4>Parecer Técnico</h4>
+                <p>{{RESUMO_PERIODO}}</p>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">{{MSP_NOME}}</div>
+                <div class="footer-tagline">"Tecnologia de ponta sem complexidade desnecessária"</div>
+                <div class="footer-contact">{{MSP_CONTATO}}</div>
+                <div class="footer-generated">
+                    Relatório gerado automaticamente em {{DATA_GERACAO}}<br>
+                    Dados coletados via Microsoft Graph API
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

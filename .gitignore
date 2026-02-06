@@ -1,0 +1,14 @@
+# Client configs (contain credentials)
+config/*.json
+!config/sample.json
+
+# Generated files
+output/
+logs/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# PowerShell
+*.ps1xml

@@ -1,0 +1,23 @@
+{
+  "msp": {
+    "nome": "Sua MSP",
+    "contato": "suporte@suamsp.com",
+    "remetente": "suporte@suamsp.com"
+  },
+  "cliente": {
+    "nome": "Nome do Cliente",
+    "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "client_id": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy",
+    "client_secret": "SEU_CLIENT_SECRET_AQUI"
+  },
+  "email": {
+    "destinatarios": ["ti@cliente.com"],
+    "cc": [],
+    "assunto_template": "Relatorio Mensal Microsoft 365 - {{PERIODO}}"
+  },
+  "opcoes": {
+    "incluir_usuarios_sem_mfa": true,
+    "incluir_recomendacoes": true,
+    "idioma": "pt-BR"
+  }
+}
