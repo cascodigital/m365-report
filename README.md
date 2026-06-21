@@ -1,12 +1,19 @@
+<div align="center">
+
 # M365 Monthly Report
 
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-blue)
-![Author](https://img.shields.io/badge/Author-Casco%20Digital-orange)
+**Monthly Microsoft 365 health and security reports for MSP clients.**
 
+![Status](https://img.shields.io/badge/Status-Active-16A34A?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-2563EB?style=flat-square)
+![Casco Digital](https://img.shields.io/badge/Casco-Digital-111827?style=flat-square)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE?style=flat-square&logo=powershell&logoColor=white)
 ![Microsoft Graph](https://img.shields.io/badge/Microsoft_Graph-API-00D9FF?style=flat-square&logo=microsoft&logoColor=white)
 ![PDF](https://img.shields.io/badge/Edge-PDF_Export-0078D4?style=flat-square&logo=microsoftedge&logoColor=white)
+
+</div>
+
+---
 
 Gera relatorios mensais em PDF da saude do Microsoft 365 de clientes MSP. Coleta via Graph API: Secure Score, logins suspeitos, MFA, licencas, storage e uso de servicos.
 
