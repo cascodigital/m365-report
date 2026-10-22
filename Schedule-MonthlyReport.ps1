@@ -78,7 +78,9 @@ Write-Host "Runs with:  $executable"
 Write-Host "Config:     $ConfigFile"
 Write-Host ""
 
-$trigger = New-ScheduledTaskTrigger -Monthly -DaysOfMonth $Day -At $Hour
+# New-ScheduledTaskTrigger has no monthly option. Register with a daily trigger,
+# then swap its schedule for a monthly one in the task XML (see the try block below).
+$trigger = New-ScheduledTaskTrigger -Daily -At $Hour
 $action = New-ScheduledTaskAction -Execute $executable -Argument $arguments -WorkingDirectory $ScriptPath
 
 # Run as the current user, whether logged on or not
@@ -93,7 +95,14 @@ if ($existingTask) {
 }
 
 try {
-    Register-ScheduledTask -TaskName $taskName -Trigger $trigger -Action $action -Principal $principal -Settings $settings -Description "Monthly M365 report - $displayName" | Out-Null
+    Register-ScheduledTask -TaskName $taskName -Trigger $trigger -Action $action -Principal $principal -Settings $settings -Description "Monthly M365 report - $displayName" -ErrorAction Stop | Out-Null
+
+    $months  = '<January/><February/><March/><April/><May/><June/><July/><August/><September/><October/><November/><December/>'
+    $monthly = "<ScheduleByMonth><DaysOfMonth><Day>$Day</Day></DaysOfMonth><Months>$months</Months></ScheduleByMonth>"
+    $xml = Export-ScheduledTask -TaskName $taskName -ErrorAction Stop
+    $newXml = [regex]::Replace($xml, '<ScheduleByDay>.*?</ScheduleByDay>', $monthly, 'Singleline')
+    if ($newXml -eq $xml) { throw "Could not convert the daily trigger to monthly (ScheduleByDay not found in the task XML)." }
+    Register-ScheduledTask -TaskName $taskName -Xml $newXml -Force -ErrorAction Stop | Out-Null
 
     Write-Host ""
     Write-Host "[OK] Task scheduled successfully." -ForegroundColor Green
