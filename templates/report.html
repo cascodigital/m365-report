@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="{{HTML_LANG}}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório Microsoft 365 - {{CLIENTE_NOME}}</title>
+    <title>{{L:TITLE}} - {{CLIENT_NAME}}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700;900&display=swap');
 
@@ -28,7 +28,7 @@
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
         }
 
-        /* HEADER - mantém escuro como elemento de marca */
+        /* HEADER - kept dark as a branding element */
         .header {
             background: linear-gradient(135deg, #0D1230 0%, #1A2350 100%);
             padding: 40px;
@@ -605,6 +605,20 @@
         .text-red { color: #DC2626; }
         .text-muted { color: #64748B; }
 
+        /* SERVICE HEALTH VARIANTS */
+        .monitoring-status.warn { background: #FFFBEB; border-color: #FDE68A; }
+        .monitoring-status.warn .pulse-dot { background: #F59E0B; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6); }
+        .monitoring-status.warn .monitoring-text { color: #D97706; }
+        .monitoring-status.unknown { background: #F1F5F9; border-color: #E2E8F0; }
+        .monitoring-status.unknown .pulse-dot { background: #94A3B8; box-shadow: none; animation: none; }
+        .monitoring-status.unknown .monitoring-text { color: #64748B; }
+
+        .metric-card.neutral::before { background: linear-gradient(90deg, #94A3B8, #CBD5E1); }
+        .metric-card.neutral .metric-value { color: #64748B; }
+        .exec-bullet .icon.gray { background: #E2E8F0; color: #64748B; }
+        .metric-row-value.muted { color: #94A3B8; font-weight: 400; font-style: italic; }
+        .note { font-size: 11px; color: #64748B; margin-top: 10px; }
+
         @media print {
             body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
@@ -614,26 +628,26 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <img src="{{LOGO_BASE64}}" alt="Logo" class="header-logo">
+            {{LOGO_IMG}}
             <div class="header-content">
-                <div class="logo-text">Casco Digital</div>
-                <h1>Relatório de Saúde <strong>Microsoft 365</strong></h1>
-                <div class="client-name">{{CLIENTE_NOME}}</div>
-                <div class="period-badge">{{PERIODO}}</div>
+                {{MSP_HEADER_BLOCK}}
+                <h1>{{L:HEADER_TITLE}} <strong>Microsoft 365</strong></h1>
+                <div class="client-name">{{CLIENT_NAME}}</div>
+                <div class="period-badge">{{PERIOD}}</div>
             </div>
         </div>
 
         <!-- EXECUTIVE SUMMARY -->
         <div class="executive-summary">
-            <h3>Resumo Executivo</h3>
+            <h3>{{L:EXEC_SUMMARY}}</h3>
             <div class="executive-bullets">
                 <div class="exec-bullet">
-                    <div class="icon green">✓</div>
-                    <span>Ambiente monitorado continuamente</span>
+                    <div class="icon {{EXEC_SOURCES_CLASS}}">{{EXEC_SOURCES_ICON}}</div>
+                    <span>{{EXEC_SOURCES_TEXT}}</span>
                 </div>
                 <div class="exec-bullet">
-                    <div class="icon cyan">◉</div>
-                    <span>{{TOTAL_USUARIOS}} usuários sob gestão</span>
+                    <div class="icon cyan">&#9673;</div>
+                    <span>{{EXEC_USERS_TEXT}}</span>
                 </div>
                 <div class="exec-bullet">
                     <div class="icon {{EXEC_SECURITY_CLASS}}">{{EXEC_SECURITY_ICON}}</div>
@@ -642,18 +656,18 @@
             </div>
         </div>
 
-        <!-- MONITORING STATUS -->
-        <div class="monitoring-status">
+        <!-- SERVICE HEALTH -->
+        <div class="monitoring-status {{HEALTH_CLASS}}">
             <div class="monitoring-left">
                 <div class="pulse-dot"></div>
                 <div class="monitoring-text">
-                    Monitoramento Ativo
-                    <span>Serviços Microsoft 365 operacionais</span>
+                    {{L:SERVICE_HEALTH}}
+                    <span>{{HEALTH_DETAIL}}</span>
                 </div>
             </div>
             <div class="monitoring-right">
-                Uptime Microsoft: <strong>99.97%</strong><br>
-                <span style="font-size: 10px;">Fonte: status.microsoft.com</span>
+                {{L:INCIDENTS_30D}}: <strong>{{HEALTH_INCIDENTS}}</strong><br>
+                <span style="font-size: 10px;">{{L:HEALTH_SOURCE}}</span>
             </div>
         </div>
 
@@ -661,143 +675,142 @@
         <div class="summary-section">
             <div class="summary-grid">
                 <div class="metric-card {{SECURE_SCORE_CLASS}}">
-                    <div class="metric-value">{{SECURE_SCORE}}%</div>
+                    <div class="metric-value">{{SECURE_SCORE_DISPLAY}}</div>
                     <div class="metric-label">Secure Score</div>
                 </div>
-                <div class="metric-card info">
-                    <div class="metric-value">{{TOTAL_USUARIOS}}</div>
-                    <div class="metric-label">Usuários</div>
+                <div class="metric-card {{USERS_CLASS}}">
+                    <div class="metric-value">{{TOTAL_USERS}}</div>
+                    <div class="metric-label">{{L:USERS}}</div>
                 </div>
                 <div class="metric-card {{MFA_CLASS}}">
-                    <div class="metric-value">{{MFA_PERCENT}}%</div>
-                    <div class="metric-label">MFA Ativo</div>
+                    <div class="metric-value">{{MFA_DISPLAY}}</div>
+                    <div class="metric-label">{{L:MFA_REGISTERED}}</div>
                 </div>
-                <div class="metric-card {{LOGINS_FALHOS_CLASS}}">
-                    <div class="metric-value">{{LOGINS_FALHOS}}</div>
-                    <div class="metric-label">Bloqueados</div>
+                <div class="metric-card {{SIGNINS_FAILED_CLASS}}">
+                    <div class="metric-value">{{SIGNINS_FAILED}}</div>
+                    <div class="metric-label">{{L:FAILED_SIGNINS}}</div>
                 </div>
             </div>
         </div>
 
-        <!-- SECURITY ANALYSIS -->
+        <!-- SECURITY ALERTS -->
         <div class="section">
-            <h2 class="section-title">Análise de Segurança</h2>
-            <p class="section-description">Verificação contínua de ameaças e vulnerabilidades no ambiente.</p>
+            <h2 class="section-title">{{L:SECURITY_TITLE}}</h2>
+            <p class="section-description">{{L:SECURITY_DESC}}</p>
 
             <div class="security-grid">
                 <div class="security-item">
-                    <div class="status">{{THREAT_ICON}}</div>
-                    <div class="label">Ameaças Detectadas</div>
+                    <div class="status">{{ALERTS_TOTAL}}</div>
+                    <div class="label">{{L:ALERTS_TOTAL}}</div>
                 </div>
                 <div class="security-item">
-                    <div class="status">{{MALWARE_ICON}}</div>
-                    <div class="label">Malware Bloqueado</div>
+                    <div class="status">{{ALERTS_HIGH}}</div>
+                    <div class="label">{{L:ALERTS_HIGH}}</div>
                 </div>
                 <div class="security-item">
-                    <div class="status">{{PHISHING_ICON}}</div>
-                    <div class="label">Phishing Prevenido</div>
+                    <div class="status">{{ALERTS_ACTIVE}}</div>
+                    <div class="label">{{L:ALERTS_ACTIVE}}</div>
                 </div>
             </div>
 
             <div class="metric-row" style="margin-top: 20px;">
-                <span class="metric-row-label">Status Geral de Segurança</span>
-                <span class="metric-row-value good">{{SECURITY_STATUS}}</span>
+                <span class="metric-row-label">{{L:SECURITY_STATUS}}</span>
+                <span class="metric-row-value {{SECURITY_STATUS_CLASS}}">{{SECURITY_STATUS}}</span>
             </div>
         </div>
 
         <!-- SECURE SCORE -->
         <div class="section">
-            <h2 class="section-title">Secure Score Microsoft</h2>
-            <p class="section-description">
-                Métrica oficial da Microsoft que avalia a postura de segurança do ambiente.
-            </p>
+            <h2 class="section-title">Microsoft Secure Score</h2>
+            <p class="section-description">{{L:SECURE_SCORE_DESC}}</p>
 
             <div class="progress-container">
                 <div class="progress-bar">
-                    <div class="progress-fill {{SECURE_SCORE_BAR_CLASS}}" style="width: {{SECURE_SCORE}}%">
-                        {{SECURE_SCORE}}%
+                    <div class="progress-fill {{SECURE_SCORE_BAR_CLASS}}" style="width: {{SECURE_SCORE_WIDTH}}%">
+                        {{SECURE_SCORE_DISPLAY}}
                     </div>
                 </div>
             </div>
 
             <div class="metric-row">
-                <span class="metric-row-label">Pontuação Atual</span>
-                <span class="metric-row-value text-cyan">{{SECURE_SCORE_ATUAL}} pontos</span>
+                <span class="metric-row-label">{{L:CURRENT_SCORE}}</span>
+                <span class="metric-row-value text-cyan">{{SECURE_SCORE_CURRENT}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Pontuação Máxima Possível</span>
-                <span class="metric-row-value">{{SECURE_SCORE_MAX}} pontos</span>
+                <span class="metric-row-label">{{L:MAX_SCORE}}</span>
+                <span class="metric-row-value">{{SECURE_SCORE_MAX}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Variação vs. Mês Anterior</span>
-                <span class="metric-row-value {{SECURE_SCORE_VARIACAO_CLASS}}">{{SECURE_SCORE_VARIACAO}}</span>
+                <span class="metric-row-label">{{L:SCORE_CHANGE}}</span>
+                <span class="metric-row-value {{SECURE_SCORE_CHANGE_CLASS}}">{{SECURE_SCORE_CHANGE}}</span>
             </div>
         </div>
 
         <!-- AUTHENTICATION -->
         <div class="section">
-            <h2 class="section-title">Autenticação e Identidade</h2>
+            <h2 class="section-title">{{L:AUTH_TITLE}}</h2>
 
             <div class="two-columns">
                 <div class="column-box">
-                    <h4>Acessos no Período</h4>
+                    <h4>{{L:SIGNINS_PERIOD}}</h4>
                     <div class="metric-row">
-                        <span class="metric-row-label">Total de Logins</span>
-                        <span class="metric-row-value">{{TOTAL_LOGINS}}</span>
+                        <span class="metric-row-label">{{L:TOTAL_SIGNINS}}</span>
+                        <span class="metric-row-value">{{SIGNINS_TOTAL}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Bem-Sucedidos</span>
-                        <span class="metric-row-value good">{{LOGINS_SUCESSO}}</span>
+                        <span class="metric-row-label">{{L:SUCCESSFUL}}</span>
+                        <span class="metric-row-value good">{{SIGNINS_SUCCESS}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Bloqueados</span>
-                        <span class="metric-row-value {{LOGINS_FALHOS_VALUE_CLASS}}">{{LOGINS_FALHOS}}</span>
+                        <span class="metric-row-label">{{L:FAILED_INTERRUPTED}}</span>
+                        <span class="metric-row-value {{SIGNINS_FAILED_VALUE_CLASS}}">{{SIGNINS_FAILED}}</span>
                     </div>
+                    {{SIGNINS_NOTE}}
                 </div>
                 <div class="column-box">
-                    <h4>Proteção de Conta</h4>
+                    <h4>{{L:ACCOUNT_PROTECTION}}</h4>
                     <div class="metric-row">
-                        <span class="metric-row-label">Usuários com MFA</span>
-                        <span class="metric-row-value">{{USUARIOS_MFA}} de {{TOTAL_USUARIOS}}</span>
+                        <span class="metric-row-label">{{L:USERS_WITH_MFA}}</span>
+                        <span class="metric-row-value">{{USERS_MFA}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Cobertura MFA</span>
-                        <span class="metric-row-value {{MFA_VALUE_CLASS}}">{{MFA_PERCENT}}%</span>
+                        <span class="metric-row-label">{{L:MFA_COVERAGE}}</span>
+                        <span class="metric-row-value {{MFA_VALUE_CLASS}}">{{MFA_DISPLAY}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Admins Protegidos</span>
-                        <span class="metric-row-value">{{ADMINS_MFA}}</span>
+                        <span class="metric-row-label">{{L:ADMINS_WITH_MFA}}</span>
+                        <span class="metric-row-value {{ADMINS_MFA_CLASS}}">{{ADMINS_MFA}}</span>
                     </div>
                 </div>
             </div>
 
-            {{USUARIOS_SEM_MFA_SECTION}}
+            {{MFA_ALERTS_SECTION}}
         </div>
 
         <!-- COLLABORATION -->
         <div class="section">
-            <h2 class="section-title">Colaboração e Produtividade</h2>
+            <h2 class="section-title">{{L:COLLAB_TITLE}}</h2>
 
             <div class="two-columns">
                 <div class="column-box">
                     <h4>Microsoft Teams</h4>
                     <div class="metric-row">
-                        <span class="metric-row-label">Total de Teams</span>
+                        <span class="metric-row-label">{{L:TOTAL_TEAMS}}</span>
                         <span class="metric-row-value">{{TOTAL_TEAMS}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Grupos Microsoft 365</span>
+                        <span class="metric-row-label">{{L:M365_GROUPS}}</span>
                         <span class="metric-row-value">{{TOTAL_GROUPS}}</span>
                     </div>
                 </div>
                 <div class="column-box">
-                    <h4>Comunicação</h4>
+                    <h4>{{L:MAIL}}</h4>
                     <div class="metric-row">
-                        <span class="metric-row-label">Caixas de Correio</span>
+                        <span class="metric-row-label">{{L:MAILBOXES}}</span>
                         <span class="metric-row-value">{{TOTAL_MAILBOXES}}</span>
                     </div>
                     <div class="metric-row">
-                        <span class="metric-row-label">Shared Mailboxes</span>
+                        <span class="metric-row-label">{{L:SHARED_MAILBOXES}}</span>
                         <span class="metric-row-value">{{SHARED_MAILBOXES}}</span>
                     </div>
                 </div>
@@ -806,89 +819,90 @@
 
         <!-- LICENSING -->
         <div class="section">
-            <h2 class="section-title">Licenciamento</h2>
+            <h2 class="section-title">{{L:LICENSING}}</h2>
 
             <div class="metric-row">
-                <span class="metric-row-label">Licenças Contratadas</span>
-                <span class="metric-row-value">{{LICENCAS_TOTAL}}</span>
+                <span class="metric-row-label">{{L:LIC_PURCHASED}}</span>
+                <span class="metric-row-value">{{LICENSES_TOTAL}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Licenças em Uso</span>
-                <span class="metric-row-value">{{LICENCAS_USADAS}}</span>
+                <span class="metric-row-label">{{L:LIC_ASSIGNED}}</span>
+                <span class="metric-row-value">{{LICENSES_USED}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Licenças Disponíveis</span>
-                <span class="metric-row-value good">{{LICENCAS_DISPONIVEIS}}</span>
+                <span class="metric-row-label">{{L:LIC_AVAILABLE}}</span>
+                <span class="metric-row-value good">{{LICENSES_AVAILABLE}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Taxa de Utilização</span>
-                <span class="metric-row-value">{{LICENCAS_UTILIZACAO}}%</span>
+                <span class="metric-row-label">{{L:LIC_UTILIZATION}}</span>
+                <span class="metric-row-value">{{LICENSES_UTILIZATION}}</span>
             </div>
 
-            {{LICENCAS_DETALHES}}
+            {{LICENSES_DETAILS}}
         </div>
 
         <!-- STORAGE -->
         <div class="section">
-            <h2 class="section-title">Armazenamento Cloud</h2>
+            <h2 class="section-title">{{L:STORAGE_TITLE}}</h2>
+            <p class="section-description">{{L:STORAGE_DESC}}</p>
 
             <div class="metric-row">
                 <span class="metric-row-label">OneDrive for Business</span>
-                <span class="metric-row-value">{{ONEDRIVE_USADO}}</span>
+                <span class="metric-row-value">{{ONEDRIVE_USED}}</span>
             </div>
             <div class="metric-row">
                 <span class="metric-row-label">SharePoint Online</span>
-                <span class="metric-row-value">{{SHAREPOINT_USADO}}</span>
+                <span class="metric-row-value">{{SHAREPOINT_USED}}</span>
             </div>
             <div class="metric-row">
                 <span class="metric-row-label">Exchange Online</span>
-                <span class="metric-row-value">{{EXCHANGE_USADO}}</span>
+                <span class="metric-row-value">{{EXCHANGE_USED}}</span>
             </div>
             <div class="metric-row">
-                <span class="metric-row-label">Total Armazenado</span>
+                <span class="metric-row-label">{{L:TOTAL_STORED}}</span>
                 <span class="metric-row-value text-cyan">{{STORAGE_TOTAL}}</span>
             </div>
         </div>
 
         <!-- SERVICE USAGE -->
         <div class="section">
-            <h2 class="section-title">Adoção de Serviços</h2>
-            <p class="section-description">Usuários ativos nos últimos 30 dias por serviço Microsoft 365.</p>
+            <h2 class="section-title">{{L:ADOPTION_TITLE}}</h2>
+            <p class="section-description">{{L:ADOPTION_DESC}}</p>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Serviço</th>
-                        <th>Usuários Ativos</th>
-                        <th>Adoção</th>
+                        <th>{{L:SERVICE}}</th>
+                        <th>{{L:ACTIVE_USERS}}</th>
+                        <th>{{L:ADOPTION}}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{TABELA_USO_SERVICOS}}
+                    {{SERVICE_USAGE_ROWS}}
                 </tbody>
             </table>
         </div>
 
         <!-- RECOMMENDATIONS -->
-        {{RECOMENDACOES_SECTION}}
+        {{RECOMMENDATIONS_SECTION}}
 
         <!-- SUMMARY -->
         <div class="section">
             <div class="summary-box">
-                <h4>Parecer Técnico</h4>
-                <p>{{RESUMO_PERIODO}}</p>
+                <h4>{{L:TECH_SUMMARY}}</h4>
+                <p>{{SUMMARY_TEXT}}</p>
             </div>
         </div>
 
         <!-- FOOTER -->
         <div class="footer">
             <div class="footer-content">
-                <div class="footer-logo">{{MSP_NOME}}</div>
-                <div class="footer-tagline">"Tecnologia de ponta sem complexidade desnecessária"</div>
-                <div class="footer-contact">{{MSP_CONTATO}}</div>
+                <div class="footer-logo">{{MSP_NAME}}</div>
+                {{MSP_TAGLINE_BLOCK}}
+                <div class="footer-contact">{{MSP_CONTACT}}</div>
                 <div class="footer-generated">
-                    Relatório gerado automaticamente em {{DATA_GERACAO}}<br>
-                    Dados coletados via Microsoft Graph API
+                    {{L:GENERATED_AT}} {{GENERATED_AT}}<br>
+                    {{L:DATA_SOURCE}}
                 </div>
             </div>
         </div>

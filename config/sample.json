@@ -1,23 +1,30 @@
 {
   "msp": {
-    "nome": "Sua MSP",
-    "contato": "suporte@suamsp.com",
-    "remetente": "suporte@suamsp.com"
+    "name": "Your MSP",
+    "contact": "support@yourmsp.example",
+    "sender": "reports@yourmsp.example",
+    "tagline": "",
+    "logo": "",
+    "sender_app": {
+      "tenant_id": "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz",
+      "client_id": "wwwwwwww-wwww-wwww-wwww-wwwwwwwwwwww",
+      "certificate_thumbprint": "SENDER_APP_CERT_THUMBPRINT"
+    }
   },
-  "cliente": {
-    "nome": "Nome do Cliente",
+  "client": {
+    "name": "Contoso",
     "tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "client_id": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy",
-    "client_secret": "SEU_CLIENT_SECRET_AQUI"
+    "certificate_thumbprint": "CLIENT_APP_CERT_THUMBPRINT"
   },
   "email": {
-    "destinatarios": ["ti@cliente.com"],
+    "recipients": ["it@contoso.example"],
     "cc": [],
-    "assunto_template": "Relatorio Mensal Microsoft 365 - {{PERIODO}}"
+    "subject_template": "Microsoft 365 Monthly Report - {{PERIOD}}"
   },
-  "opcoes": {
-    "incluir_usuarios_sem_mfa": true,
-    "incluir_recomendacoes": true,
-    "idioma": "pt-BR"
+  "options": {
+    "include_users_without_mfa": true,
+    "include_recommendations": true,
+    "language": "en"
   }
 }

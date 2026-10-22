@@ -1,25 +1,25 @@
 <#
 .SYNOPSIS
-    Script de execucao rapida - roda relatorio para um ou todos os clientes.
+    Quick runner - runs the report for one client or for all clients.
 
 .PARAMETER Client
-    Nome do arquivo de config (sem extensao). Ex: "cascodigital"
-    Se nao especificado, lista clientes disponiveis.
+    Config file name without extension (e.g. "contoso" for config\contoso.json).
+    If omitted (and -All is not used), lists the configured clients.
 
 .PARAMETER All
-    Se especificado, roda para TODOS os clientes na pasta config.
+    Runs the report for EVERY client in the config folder (sample.json is skipped).
 
 .PARAMETER Preview
-    Abre HTML no navegador ao inves de gerar PDF.
+    Opens the HTML in the browser instead of generating a PDF.
 
 .PARAMETER SendEmail
-    Envia email apos gerar PDF.
+    Sends the email after generating the PDF.
 
 .EXAMPLE
-    .\Run-Report.ps1 -Client cascodigital -Preview
+    .\Run-Report.ps1 -Client contoso -Preview
 
 .EXAMPLE
-    .\Run-Report.ps1 -Client cascodigital -SendEmail
+    .\Run-Report.ps1 -Client contoso -SendEmail
 
 .EXAMPLE
     .\Run-Report.ps1 -All
@@ -44,51 +44,61 @@ $ScriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ConfigPath = Join-Path $ScriptPath "config"
 $GetReportScript = Join-Path $ScriptPath "Get-M365Report.ps1"
 
-# Listar clientes disponiveis
-$configs = Get-ChildItem -Path $ConfigPath -Filter "*.json" -ErrorAction SilentlyContinue
+# Configured clients (the sample file is not a real client)
+$configs = @(Get-ChildItem -Path $ConfigPath -Filter "*.json" -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -ne "sample.json" })
+
+function Get-ClientDisplayName {
+    param([string]$Path)
+    try {
+        $data = Get-Content $Path -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($data.client.name) { return $data.client.name }
+        return $data.cliente.nome
+    }
+    catch { return "(invalid JSON)" }
+}
 
 if (!$Client -and !$All) {
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
-    Write-Host " M365 MONTHLY REPORT - CLIENTES" -ForegroundColor Cyan
+    Write-Host " M365 MONTHLY REPORT - CLIENTS" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host ""
 
     if ($configs.Count -eq 0) {
-        Write-Host "Nenhum cliente configurado." -ForegroundColor Yellow
-        Write-Host "Use New-ClientConfig.ps1 para adicionar." -ForegroundColor Yellow
+        Write-Host "No clients configured." -ForegroundColor Yellow
+        Write-Host "Use New-ClientConfig.ps1 to add one." -ForegroundColor Yellow
     }
     else {
-        Write-Host "Clientes disponiveis:" -ForegroundColor Green
+        Write-Host "Available clients:" -ForegroundColor Green
         Write-Host ""
         foreach ($cfg in $configs) {
-            $data = Get-Content $cfg.FullName -Raw | ConvertFrom-Json
             Write-Host "  - $($cfg.BaseName)" -ForegroundColor White -NoNewline
-            Write-Host " ($($data.cliente.nome))" -ForegroundColor Gray
+            Write-Host " ($(Get-ClientDisplayName $cfg.FullName))" -ForegroundColor Gray
         }
         Write-Host ""
-        Write-Host "Uso:" -ForegroundColor Yellow
-        Write-Host "  .\Run-Report.ps1 -Client <nome> -Preview    # Abre no navegador"
-        Write-Host "  .\Run-Report.ps1 -Client <nome>             # Gera PDF"
-        Write-Host "  .\Run-Report.ps1 -Client <nome> -SendEmail  # Gera e envia"
-        Write-Host "  .\Run-Report.ps1 -All                       # Todos os clientes"
+        Write-Host "Usage:" -ForegroundColor Yellow
+        Write-Host "  .\Run-Report.ps1 -Client <name> -Preview    # Open in the browser"
+        Write-Host "  .\Run-Report.ps1 -Client <name>             # Generate PDF"
+        Write-Host "  .\Run-Report.ps1 -Client <name> -SendEmail  # Generate and send"
+        Write-Host "  .\Run-Report.ps1 -All                       # All clients"
     }
     Write-Host ""
     exit 0
 }
 
-# Executar para um cliente especifico
+# Single client
 if ($Client) {
     $configFile = Join-Path $ConfigPath "$Client.json"
 
     if (!(Test-Path $configFile)) {
-        Write-Host "Cliente nao encontrado: $Client" -ForegroundColor Red
-        Write-Host "Arquivo esperado: $configFile" -ForegroundColor Yellow
+        Write-Host "Client not found: $Client" -ForegroundColor Red
+        Write-Host "Expected file: $configFile" -ForegroundColor Yellow
         exit 1
     }
 
     Write-Host ""
-    Write-Host "Executando relatorio para: $Client" -ForegroundColor Cyan
+    Write-Host "Running report for: $Client" -ForegroundColor Cyan
     Write-Host ""
 
     $params = @{
@@ -101,16 +111,16 @@ if ($Client) {
     & $GetReportScript @params
 }
 
-# Executar para todos os clientes
+# All clients
 if ($All) {
     if ($configs.Count -eq 0) {
-        Write-Host "Nenhum cliente configurado." -ForegroundColor Yellow
+        Write-Host "No clients configured." -ForegroundColor Yellow
         exit 1
     }
 
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Cyan
-    Write-Host " EXECUTANDO PARA TODOS OS CLIENTES" -ForegroundColor Cyan
+    Write-Host " RUNNING FOR ALL CLIENTS" -ForegroundColor Cyan
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host ""
 
@@ -118,7 +128,7 @@ if ($All) {
 
     foreach ($cfg in $configs) {
         Write-Host "----------------------------------------" -ForegroundColor Gray
-        Write-Host "Cliente: $($cfg.BaseName)" -ForegroundColor Cyan
+        Write-Host "Client: $($cfg.BaseName)" -ForegroundColor Cyan
 
         try {
             $params = @{
@@ -130,24 +140,24 @@ if ($All) {
             $pdfPath = & $GetReportScript @params
 
             $results += [PSCustomObject]@{
-                Cliente = $cfg.BaseName
-                Status  = "OK"
-                PDF     = $pdfPath
+                Client = $cfg.BaseName
+                Status = "OK"
+                PDF    = $pdfPath
             }
         }
         catch {
             $results += [PSCustomObject]@{
-                Cliente = $cfg.BaseName
-                Status  = "ERRO"
-                PDF     = $_.Exception.Message
+                Client = $cfg.BaseName
+                Status = "ERROR"
+                PDF    = $_.Exception.Message
             }
-            Write-Host "ERRO: $_" -ForegroundColor Red
+            Write-Host "ERROR: $_" -ForegroundColor Red
         }
     }
 
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Green
-    Write-Host " RESUMO DA EXECUCAO" -ForegroundColor Green
+    Write-Host " RUN SUMMARY" -ForegroundColor Green
     Write-Host "========================================" -ForegroundColor Green
     Write-Host ""
 
